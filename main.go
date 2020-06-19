@@ -42,6 +42,20 @@ func main() {
 		userGroup.GET("/:id/following", handlers.HandleFollowingList)
 		userGroup.GET("/:id/mutual_following", middlewares.AuthMiddleWare(), handlers.HandleMutualFollowingList)
 		userGroup.POST("/:id/update_avatar",middlewares.AuthMiddleWare(),  handlers.HandleUpdateAvatar)
+		userGroup.GET("/:id/stars", handlers.HandleStarList)
+	}
+
+	starGroup := engine.Group("/star")
+	{
+		starGroup.POST("/publish", middlewares.AuthMiddleWare(), handlers.HandlePublishStar)
+		starGroup.POST("/forward/:starID", middlewares.AuthMiddleWare(), handlers.HandleForwardStar)
+		starGroup.POST("/update/:starID", middlewares.AuthMiddleWare(), handlers.HandleUpdateStar)
+		starGroup.GET("/delete/:starID", middlewares.AuthMiddleWare(), handlers.HandleDeleteStar)
+		starGroup.GET("/like/:starID", middlewares.AuthMiddleWare(), handlers.HandleLikeStar)
+		starGroup.GET("/cancel_like/:starID", middlewares.AuthMiddleWare(), handlers.HandleCancelLikeStar)
+		starGroup.GET("/details/:starID", handlers.HandleGetStar)
+		starGroup.GET("/like_users/:starID", handlers.HandleLikeUserList)
+		starGroup.GET("/forward_stars/:starID", handlers.HandleForwardStarList)
 	}
 
 	_ = engine.Run(ip + ":" + port)

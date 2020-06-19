@@ -23,6 +23,12 @@ var (
 	redisPort string
 )
 
+var (
+	AvatarsDir string
+	DefaultAvatar string
+	StarImgsDir string
+)
+
 var redisConn redis.Conn
 
 func initConfig() {
@@ -62,4 +68,8 @@ func init() {
 	initConfig()
 	initMysql()
 	initRedis()
+
+	AvatarsDir = viper.GetString("avatars_dir")
+	DefaultAvatar = viper.GetString("avatars_dir") + "default.jpg"
+	StarImgsDir = viper.GetString("star_imgs_dir")
 }

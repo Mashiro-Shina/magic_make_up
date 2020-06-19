@@ -3,6 +3,7 @@ app_name = "magic_make_up"
 log_level = "DEBUG"
 
 avatars_dir = "./avatars/"
+star_imgs_dir = "./stars/"
 
 [mysql]
 ip = "127.0.0.1"
@@ -18,3 +19,11 @@ port = "6379"
 [server]
 ip = "127.0.0.1"
 port = "8888"
+
+[rabbitmq]
+ip = "127.0.0.1"
+port = "5672"
+user = "xingqingtao"
+password = "xqt19980901"
+vhost = "magic_make_up"
+comment_queue = "commentQueue"

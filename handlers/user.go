@@ -27,7 +27,7 @@ func HandleRegister(ctx *gin.Context) {
 		return
 	}
 
-	user := entities.NewUser(phone, string(hashedPwd), name, "", defaultAvatar)
+	user := entities.NewUser(phone, string(hashedPwd), name, "", repositories.DefaultAvatar)
 	_, err = repositories.InsertUser(user)
 	if err != nil {
 		// 违背 unique
@@ -220,7 +220,7 @@ func HandleUpdateAvatar(ctx *gin.Context) {
 	}
 
 	userID := ctx.Param("id")
-	err = ctx.SaveUploadedFile(avatar, avatarsDir + userID + ".jpg")
+	err = ctx.SaveUploadedFile(avatar, repositories.AvatarsDir + userID + ".jpg")
 	if err != nil {
 		log.Printf("保存头像失败: %v", err)
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "保存头像失败")
@@ -228,7 +228,7 @@ func HandleUpdateAvatar(ctx *gin.Context) {
 	}
 
 	id, _ := strconv.Atoi(userID)
-	err = repositories.UpdateAvatar(id, avatarsDir + userID + ".jpg")
+	err = repositories.UpdateAvatar(id, repositories.AvatarsDir + userID + ".jpg")
 	if err != nil {
 		log.Printf("更新头像失败: %v", err)
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "更换头像失败")

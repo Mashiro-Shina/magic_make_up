@@ -133,7 +133,7 @@ func UnFollowUser(from string, to string) (bool, error) {
 }
 
 func GetFollowingList(id string) ([]string, error) {
-	items, err := redis.Values(redisConn.Do("hgetall", fmt.Sprintf("user%s:following", id)))
+	items, err := redis.Values(redisConn.Do("hkeys", fmt.Sprintf("user%s:following", id)))
 	if err != nil {
 		log.Printf("get following list failed: %v", err)
 		return nil, err

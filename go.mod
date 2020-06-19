@@ -9,5 +9,6 @@ require (
 	github.com/gomodule/redigo/redis v0.0.0-20200429221454-e14091dffc1b
 	github.com/jinzhu/gorm v1.9.12
 	github.com/spf13/viper v1.7.0
+	github.com/streadway/amqp v1.0.0
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
 )
