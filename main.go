@@ -6,6 +6,7 @@ import (
 	"log"
 	"magicMakeup/handlers"
 	"magicMakeup/middlewares"
+	"magicMakeup/rabbitmq"
 )
 
 var (
@@ -23,6 +24,8 @@ func init() {
 
 	ip = viper.GetString("server.ip")
 	port = viper.GetString("server.port")
+
+	go rabbitmq.RabbitmqConn.ConsumeComment()
 }
 
 func main() {
@@ -56,6 +59,18 @@ func main() {
 		starGroup.GET("/details/:starID", handlers.HandleGetStar)
 		starGroup.GET("/like_users/:starID", handlers.HandleLikeUserList)
 		starGroup.GET("/forward_stars/:starID", handlers.HandleForwardStarList)
+		starGroup.GET("/comments/:starID", handlers.HandleCommentList)
+	}
+
+	commentGroup := engine.Group("/comment")
+	{
+		commentGroup.POST("/publish/:starID/:replyID", middlewares.AuthMiddleWare(), handlers.HandlePublishComment)
+		commentGroup.GET("/delete/:commentID", middlewares.AuthMiddleWare(), handlers.HandleDeleteComment)
+		commentGroup.GET("/details/:commentID", handlers.HandleGetComment)
+		commentGroup.GET("/reply_list/:commentID", handlers.HandleGetReplyCommentList)
+		commentGroup.GET("/like/:commentID", middlewares.AuthMiddleWare(), handlers.HandleLikeComment)
+		commentGroup.GET("/cancel_like/:commentID", middlewares.AuthMiddleWare(), handlers.HandleCancelLikeComment)
+		commentGroup.GET("/like_users/:commentID", handlers.HandleLikeCommentUserList)
 	}
 
 	_ = engine.Run(ip + ":" + port)

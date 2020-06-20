@@ -210,7 +210,7 @@ func CancelLikeStar(userID int, star *entities.Star) error {
 func GetStarList(userID int) ([]*entities.Star, error) {
 	var stars []*entities.Star
 
-	res := mysqlConn.Where("user_id=?", userID).Find(&stars)
+	res := mysqlConn.Where("user_id=?", userID).Find(&stars).Order("publish_time")
 	if res.Error != nil {
 		return nil, err
 	}

@@ -192,12 +192,11 @@ func HandleGetStar(ctx *gin.Context) {
 	starID := ctx.Param("starID")
 	star, err := repositories.SearchStarByID(common.Int(starID))
 	if err != nil {
+		if err.Error() == "record not found" {
+			response.Response(ctx, http.StatusBadRequest, 400, nil, "该动态已删除")
+			return
+		}
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "内部错误")
-		return
-	}
-
-	if star == nil {
-		response.Response(ctx, http.StatusBadRequest, 400, nil, "该动态已删除")
 		return
 	}
 

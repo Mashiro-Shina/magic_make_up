@@ -1,9 +1,11 @@
 package rabbitmq
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
+	"magicMakeup/entities"
+	"magicMakeup/repositories"
 )
 
 // simple mode
@@ -96,7 +98,14 @@ func (r *RabbitMQ) ConsumeComment() {
 	forever := make(chan bool)
 	go func() {
 		for data := range msg {
-			fmt.Println(data.Body)
+			var comment entities.Comment
+			err := json.Unmarshal(data.Body, &comment)
+			if err == nil {
+				_, _ = repositories.InsertComment(&comment)
+				if comment.ReplyID != -1 {
+					_ = repositories.ReplyComment(&comment)
+				}
+			}
 		}
 	}()
 
