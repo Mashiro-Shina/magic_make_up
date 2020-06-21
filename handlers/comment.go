@@ -59,7 +59,7 @@ func HandleGetComment(ctx *gin.Context) {
 			response.Response(ctx, http.StatusBadRequest, 400, nil, "该评论已删除")
 			return
 		}
-		response.Response(ctx, http.StatusInternalServerError, 200, nil, "内部错误")
+		response.Response(ctx, http.StatusInternalServerError, 500, nil, "内部错误")
 		return
 	}
 
@@ -133,14 +133,27 @@ func HandleCommentList(ctx *gin.Context) {
 	}
 
 	users := make([]*dto.UserDTO, len(comments))
+	commentDTOs := make([]*dto.CommentDTO, len(comments))
+	replyComments := make([][]*dto.CommentDTO, len(comments))
+	replyUsers := make([][]*dto.UserDTO, len(comments))
 	for i, comment := range comments {
 		user, _ := repositories.SearchUserByID(comment.UserID)
 		users[i] = dto.ToUserDTO(user)
+		commentDTOs[i] = dto.ToCommentDTO(comment)
+
+		replys, _ := repositories.GetReplyCommentList(comment.ID)
+		for _, reply := range replys {
+			replyComments[i] = append(replyComments[i], dto.ToCommentDTO(reply))
+			replyUser, _ := repositories.SearchUserByID(reply.UserID)
+			replyUsers[i] = append(replyUsers[i], dto.ToUserDTO(replyUser))
+		}
 	}
 
 	response.Response(ctx, http.StatusOK, 200, gin.H{
-		"comments": comments,
+		"comments": commentDTOs,
 		"users": users,
+		"replyComments": replyComments,
+		"replyUsers": replyUsers,
 	}, "获取评论列表成功")
 }
 

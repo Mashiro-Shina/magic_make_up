@@ -111,7 +111,7 @@ func CancelLikeComment(userID int, commentID int) error {
 
 func GetCommentList(starID int) ([]*entities.Comment, error) {
 	var comments []*entities.Comment
-	res := mysqlConn.Where("star_id=?", starID).Find(&comments)
+	res := mysqlConn.Where("star_id=? and reply_id=-1", starID).Find(&comments)
 	if res.Error != nil {
 		return nil, res.Error
 	}
