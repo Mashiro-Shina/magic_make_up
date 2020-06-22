@@ -46,6 +46,10 @@ func ReplyComment(comment *entities.Comment) error {
 
 	// 记录回复评论的 id
 	_, err := redisConn.Do("hset", fmt.Sprintf("comment%d:reply_comments", originalComment.ID), comment.ID, time.Now().Unix())
+
+	// 记录回复记录用来通知用户
+	_, err = redisConn.Do("hset", fmt.Sprintf("notice:user%d:comment%d:reply_users", originalComment.UserID,
+		originalComment.ID), comment.UserID, time.Now().Unix())
 	return err
 }
 
@@ -97,6 +101,10 @@ func LikeComment(userID int, commentID int) error {
 	_, _ = UpdateComment(comment)
 
 	_, err := redisConn.Do("hset", fmt.Sprintf("comment%d:like_users", comment.ID), userID, time.Now().Unix())
+
+	// 记录点赞记录
+	_, err = redisConn.Do("hset", fmt.Sprintf("notice:user%d:comment%d:like_users", comment.UserID, comment.ID),
+		userID, time.Now().Unix())
 	return err
 }
 

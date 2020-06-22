@@ -94,7 +94,7 @@ func HandleForwardStar(ctx *gin.Context) {
 	star.LikeNum = originalStar.LikeNum
 	star.CommentNum = originalStar.CommentNum
 
-	_, err = repositories.ForwardStar(star)
+	_, err = repositories.ForwardStar(star, common.Int(starID))
 	if err != nil {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "内部错误")
 		return

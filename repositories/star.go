@@ -40,7 +40,7 @@ func SearchStarByID(id int) (*entities.Star, error) {
 	return star, nil
 }
 
-func ForwardStar(star *entities.Star) (*entities.Star, error) {
+func ForwardStar(star *entities.Star, starID int) (*entities.Star, error) {
 	star, _ = UpdateStar(star)
 	// 递增转发数
 	originStar, _ := SearchStarByID(star.PreviousID)
@@ -60,6 +60,13 @@ func ForwardStar(star *entities.Star) (*entities.Star, error) {
 		star.ForwardNum = originStar.ForwardNum
 		_, _ = UpdateStar(star)
 	}
+
+	straightForwardStar, _ := SearchStarByID(starID)
+	//　转发通知
+	_, _ = redisConn.Do("hset", fmt.Sprintf("notice:user%d:star%d:forward_users", straightForwardStar.UserID,
+		straightForwardStar.ID), star.UserID, time.Now().Unix())
+	_, _ = redisConn.Do("hset", fmt.Sprintf("notice:user%d:star%d:forward_users", originStar.UserID,
+		originStar.ID), star.UserID, time.Now().Unix())
 
 	return star, nil
 }
@@ -153,6 +160,9 @@ func LikeStar(userID int, star *entities.Star) error {
 	// 给一条转发的动态点赞本质是给原动态点赞
 	if star.IsForward == 1 {
 		originalStar, _ := SearchStarByID(star.PreviousID)
+		// 点赞通知发送给动态原作者
+		_, _ = redisConn.Do("hset", fmt.Sprintf("notice:user%d:star%d:like_users", originalStar.UserID, originalStar.ID),
+			userID, time.Now().Unix())
 		return LikeStar(userID, originalStar)
 	}
 	// 点赞数加一
@@ -176,6 +186,10 @@ func LikeStar(userID int, star *entities.Star) error {
 	if err != nil {
 		return err
 	}
+
+	// 点赞通知发送给转发者
+	_, _ = redisConn.Do("hset", fmt.Sprintf("notice:user%d:star%d:like_users", star.UserID, star.ID),
+		userID, time.Now().Unix())
 
 	return nil
 }

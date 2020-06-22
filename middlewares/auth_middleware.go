@@ -35,6 +35,7 @@ func AuthMiddleWare() gin.HandlerFunc {
 		user, err := repositories.SearchUserByID(claims.UserID)
 		if err != nil {
 			response.Response(ctx, http.StatusBadRequest, 401, nil, "用户已注销，权限不足")
+			ctx.Abort()
 			return
 		}
 

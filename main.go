@@ -73,5 +73,13 @@ func main() {
 		commentGroup.GET("/like_users/:commentID", handlers.HandleLikeCommentUserList)
 	}
 
+	noticeGroup := engine.Group("/notice")
+	{
+		noticeGroup.GET("/comment/like_users", middlewares.AuthMiddleWare(), handlers.HandleGetCommentLikeNotifications)
+		noticeGroup.GET("/comment/reply_users", middlewares.AuthMiddleWare(), handlers.HandleGetCommentReplyNotifications)
+		noticeGroup.GET("/star/like_users", middlewares.AuthMiddleWare(), handlers.HandleGetStarLikeNotifications)
+		noticeGroup.GET("/star/forward_users", middlewares.AuthMiddleWare(), handlers.HandleGetStarForwardNotifications)
+	}
+
 	_ = engine.Run(ip + ":" + port)
 }
