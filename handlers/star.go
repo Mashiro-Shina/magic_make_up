@@ -263,3 +263,13 @@ func HandleLikeUserList(ctx *gin.Context) {
 	}, "获取点赞用户列表成功")
 }
 
+func HandleGetAllStars(ctx *gin.Context) {
+	stars, _ := repositories.GetAllStars()
+	starDTOs := make([]*dto.StarDTO, len(stars))
+	for i, star := range stars {
+		starDTOs[i] = dto.ToStarDTO(star)
+	}
+	response.Response(ctx, http.StatusOK, 200, gin.H{
+		"stars": starDTOs,
+	}, "获取所有动态成功")
+}

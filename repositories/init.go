@@ -27,6 +27,7 @@ var (
 	AvatarsDir string
 	DefaultAvatar string
 	StarImgsDir string
+	ExampleImgsDir string
 )
 
 var redisConn redis.Conn
@@ -72,4 +73,5 @@ func init() {
 	AvatarsDir = viper.GetString("avatars_dir")
 	DefaultAvatar = viper.GetString("avatars_dir") + "default.jpg"
 	StarImgsDir = viper.GetString("star_imgs_dir")
+	ExampleImgsDir = viper.GetString("example_imgs_dir")
 }

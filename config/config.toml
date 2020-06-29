@@ -4,6 +4,7 @@ log_level = "DEBUG"
 
 avatars_dir = "./avatars/"
 star_imgs_dir = "./stars/"
+example_imgs_dir = "./examples"
 
 [mysql]
 ip = "127.0.0.1"

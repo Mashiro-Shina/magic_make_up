@@ -60,6 +60,7 @@ func main() {
 		starGroup.GET("/like_users/:starID", handlers.HandleLikeUserList)
 		starGroup.GET("/forward_stars/:starID", handlers.HandleForwardStarList)
 		starGroup.GET("/comments/:starID", handlers.HandleCommentList)
+		starGroup.GET("/all", middlewares.AuthMiddleWare(), handlers.HandleGetAllStars)
 	}
 
 	commentGroup := engine.Group("/comment")
@@ -80,6 +81,8 @@ func main() {
 		noticeGroup.GET("/star/like_users", middlewares.AuthMiddleWare(), handlers.HandleGetStarLikeNotifications)
 		noticeGroup.GET("/star/forward_users", middlewares.AuthMiddleWare(), handlers.HandleGetStarForwardNotifications)
 	}
+
+	engine.GET("/examples", handlers.HandleGetExamples)
 
 	_ = engine.Run(ip + ":" + port)
 }
